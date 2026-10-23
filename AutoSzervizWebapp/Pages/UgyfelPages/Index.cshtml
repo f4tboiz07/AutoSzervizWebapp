@@ -1,0 +1,54 @@
+@page
+@model AutoSzervizWebapp.Pages.UgyfelPages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Ugyfel[0].Nev)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ugyfel[0].Telefon)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ugyfel[0].Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ugyfel[0].Javitasok)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Ugyfel) {
+        <tr>
+            <td>
+                @Html.DisplayFor(model => item.Nev)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Telefon)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Javitasok)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Szerkesztés</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Adatok</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Törlés</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
