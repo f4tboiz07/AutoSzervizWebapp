@@ -14,16 +14,19 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <span class="text-danger">*</span>
+@*                 <span class="text-danger">*</span>
                 <label asp-for="Javitas.UgyfelId" class="control-label"></label>
                 <input asp-for="Javitas.UgyfelId" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Javitas.UgyfelId" class="text-danger"></span> *@
+            </div>
+            <div>
+                <label asp-for="Javitas.UgyfelId">Ügyfél</label>
+                <select asp-for="Javitas.UgyfelId" asp-items="Model.UgyfelSelectList">
+                    <option value="">-- Válassz ügyfelet --</option>
+                </select>
                 <span asp-validation-for="Javitas.UgyfelId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Javitas.Ugyfel" class="control-label"></label>
-                <input asp-for="Javitas.Ugyfel" class="form-control" />
-                <span asp-validation-for="Javitas.Ugyfel" class="text-danger"></span>
-            </div>
+           
             <div class="form-group">
                 <span class="text-danger">*</span>
                 <label asp-for="Javitas.Rendszam" class="control-label"></label>
