@@ -21,4 +21,6 @@ public class IndexModel : PageModel
     {
         Javitas = await _context.Javitasok.ToListAsync();
     }
+
+
 }

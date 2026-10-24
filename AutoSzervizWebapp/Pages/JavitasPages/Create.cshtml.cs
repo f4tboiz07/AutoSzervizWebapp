@@ -44,6 +44,8 @@ public class CreateModel : PageModel
         await UgyfelBetoltesAsync();
     }
 
+
+
     public async Task<IActionResult> OnPostAsync()
     {
 
