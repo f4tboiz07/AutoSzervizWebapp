@@ -23,7 +23,8 @@
                 @Html.DisplayNameFor(model => model.Ugyfel[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ugyfel[0].Javitasok)
+               @*  @Html.DisplayNameFor(model => model.Ugyfel[0].Javitasok) *@
+                Javítások száma
             </th>
             <th></th>
         </tr>
@@ -41,7 +42,7 @@
                 @Html.DisplayFor(model => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(model => item.Javitasok)
+                    @Html.DisplayFor(model => item.Javitasok.Count) Javítás
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Szerkesztés</a> |

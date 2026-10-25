@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using AutoSzervizWebapp.Models;
 using AutoSzervizWebapp.Data;
+using AutoSzervizWebapp.DTOs;
 
 namespace AutoSzervizWebapp.Pages.JavitasPages;
 
@@ -16,56 +17,54 @@ public class EditModel : PageModel
     }
 
     [BindProperty]
-    public Javitas Javitas { get; set; } = default!;
+    public JavitasEditDTO Javitas { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        if (id is null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var javitas = await _context.Javitasok.FirstOrDefaultAsync(m => m.Id == id);
-        if (javitas is null)
+        var javitas = await _context.Javitasok
+            .FirstOrDefaultAsync(j => j.Id == id);
+
+        if (javitas == null)
         {
             return NotFound();
         }
-        Javitas = javitas;
+
+        Javitas = new JavitasEditDTO
+        {
+            Rendszam = javitas.Rendszam,
+            Leiras = javitas.Leiras,
+            Koltseg = javitas.Koltseg
+        };
+
         return Page();
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see https://aka.ms/RazorPagesCRUD.
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(int id)
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        _context.Attach(Javitas).State = EntityState.Modified;
+        var javitas = await _context.Javitasok
+            .FirstOrDefaultAsync(j => j.Id == id);
 
-        try
+        if (javitas == null)
         {
-            await _context.SaveChangesAsync();
+            return NotFound();
         }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!JavitasExists(Javitas.Id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
+
+        javitas.Rendszam = Javitas.Rendszam;
+        javitas.Leiras = Javitas.Leiras;
+        javitas.Koltseg = Javitas.Koltseg;
+
+        await _context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
-    }
-
-    private bool JavitasExists(int id)
-    {
-        return _context.Javitasok.Any(e => e.Id == id);
     }
 }

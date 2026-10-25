@@ -19,6 +19,9 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        Ugyfel = await _context.Ugyfelek.OrderBy(u => u.Nev).ToListAsync();
+        Ugyfel = await _context.Ugyfelek
+            .Include(u => u.Javitasok)
+            .OrderBy(u => u.Nev)
+            .ToListAsync();
     }
 }

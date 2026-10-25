@@ -9,6 +9,8 @@ namespace AutoSzervizWebapp.DTOs
         public int UgyfelId { get; set; }
         [Required(ErrorMessage = "A rendszám megadása kötelező.")]
         [StringLength(10, ErrorMessage = "A rendszám maximum 10 karakter hosszú lehet.")]
+        [RegularExpression(@"^[A-Z]{3}-[0-9]{3}$",ErrorMessage = "A rendszám formátuma például ABC-123 legyen.")]
+
         public string Rendszam { get; set; }
         [StringLength(300, ErrorMessage = "A leírás maximum 300 karakter hosszú lehet.")]
         public string? Leiras { get; set; }

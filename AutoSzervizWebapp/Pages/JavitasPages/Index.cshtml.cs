@@ -19,7 +19,10 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        Javitas = await _context.Javitasok.ToListAsync();
+        Javitas = await _context.Javitasok
+            .Include(j => j.Ugyfel)
+            .OrderBy(j => j.Ugyfel.Nev)
+            .ToListAsync();
     }
 
 
