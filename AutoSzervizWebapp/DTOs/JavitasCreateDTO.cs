@@ -15,7 +15,7 @@ namespace AutoSzervizWebapp.DTOs
         [StringLength(300, ErrorMessage = "A leírás maximum 300 karakter hosszú lehet.")]
         public string? Leiras { get; set; }
         [Range(typeof(decimal), "0", "9999999999", ErrorMessage = "A költség 0 és 9999999999 közötti lehet.")]
-        public decimal Koltseg { get; set; }
+        public decimal? Koltseg { get; set; }
         public string Allapot { get; set; } = "Felvéve";
         public DateTime FelvetelDatuma { get; set; } = DateTime.Now;
     }

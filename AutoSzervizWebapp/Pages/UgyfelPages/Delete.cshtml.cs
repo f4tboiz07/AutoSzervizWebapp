@@ -25,7 +25,7 @@ public class DeleteModel : PageModel
             return NotFound();
         }
 
-        var ugyfel = await _context.Ugyfelek.FirstOrDefaultAsync(m => m.Id == id);
+        var ugyfel = await _context.Ugyfelek.Include(u => u.Javitasok).FirstOrDefaultAsync(m => m.Id == id);
         if (ugyfel is null)
         {
             return NotFound();
@@ -51,12 +51,20 @@ public class DeleteModel : PageModel
             return NotFound();
         }
 
-        var ugyfel = await _context.Ugyfelek.FindAsync(id);
+        var ugyfel = await _context.Ugyfelek.Include(u => u.Javitasok).FirstOrDefaultAsync(u => u.Id == id);
         if (ugyfel != null)
         {
             Ugyfel = ugyfel;
+
+            if (Ugyfel.Javitasok.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Az ügyfélhez javítás tartozik emiatt nem törölhető!");
+                return Page();
+            }
             _context.Ugyfelek.Remove(Ugyfel);
             await _context.SaveChangesAsync();
+
+
         }
 
         return RedirectToPage("./Index");

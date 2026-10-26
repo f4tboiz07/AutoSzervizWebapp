@@ -15,6 +15,7 @@ public class DetailsModel : PageModel
     }
 
     public Javitas Javitas { get; set; } = default!;
+    public string ugyfelNev { get; set; } = string.Empty;
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
@@ -23,14 +24,19 @@ public class DetailsModel : PageModel
             return NotFound();
         }
 
-        var javitas = await _context.Javitasok.FirstOrDefaultAsync(m => m.Id == id);
+        var javitas = await _context.Javitasok
+            .Where(m => m.Id == id)
+            .Select(j => new { Javitas = j, ugyfelNev = j.Ugyfel.Nev })
+            .FirstOrDefaultAsync();
         if (javitas is null)
+
         {
             return NotFound();
         }
         else
         {
-            Javitas = javitas;
+            Javitas = javitas.Javitas;
+            ugyfelNev = javitas.ugyfelNev;
         }
 
         return Page();

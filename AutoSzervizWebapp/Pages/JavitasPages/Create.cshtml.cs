@@ -15,6 +15,7 @@ public class CreateModel : PageModel
     public CreateModel(SzervizDbContext context)
     {
         _context = context;
+
     }
 
 
@@ -26,7 +27,6 @@ public class CreateModel : PageModel
     {
         var ugyfelek = await _context.Ugyfelek.AsNoTracking().OrderBy(u => u.Nev).ToListAsync();
 
-        //Console.WriteLine($"Ügyfelek száma: {ugyfelek.Count}");
 
 
         UgyfelSelectList = new SelectList(

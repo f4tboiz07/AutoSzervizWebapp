@@ -29,11 +29,38 @@
                 <input asp-for="Javitas.Koltseg" class="form-control" />
                 <span asp-validation-for="Javitas.Koltseg" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Javitas.Allapot" class="control-label"></label>
-                <input asp-for="Javitas.Allapot" class="form-control" />
-                <span asp-validation-for="Javitas.Allapot" class="text-danger"></span>
-            </div>
+            <div class="form-group mt-3">
+                <label asp-for="AllapotIndex" class="control-label"> Javítás állapota</label>
+                <input asp-for="AllapotIndex"
+                    type="range"
+                    min="0"
+                    max="2"
+                    step="1"
+                    class="form-range"
+                       oninput="document.getElementById('allapotSzoveg').textContent =
+                       ['Felvéve', 'Folyamatban', 'Kész'][this.value]"      
+                />
+@*                 <span asp-validation-for="Javitas.Allapot" class="text-danger"></span>*@
+                <div class="d-flex justify-content-between" >
+                    <small>Felvéve</small>
+                    <small>Folyamatban</small>
+                    <small>Kész</small>
+                </div>
+                <p class="mt-2">
+                    Kiválasztott Állapot:
+                    <strong id="allapotSzoveg">
+                        @(Model.AllapotIndex switch
+                        {
+                            0 => "Felvéve",
+                            1 => "Folyamatban",
+                            2 => "Kész",
+                            _ => "Folyamatban"
+                        })
+                    </strong>
+                </p>
+                
+                <span asp-validation-for="AllapotIndex" class="text-danger"></span>
+         </div>
             <div class="form-group">
                 <label asp-for="Javitas.FelvetelDatuma" class="control-label"></label>
                 <input asp-for="Javitas.FelvetelDatuma" class="form-control" />
