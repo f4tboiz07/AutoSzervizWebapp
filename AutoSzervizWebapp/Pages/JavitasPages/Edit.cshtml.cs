@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using AutoSzervizWebapp.Models;
 using AutoSzervizWebapp.Data;
 using AutoSzervizWebapp.DTOs;
-using System.ComponentModel.DataAnnotations;
 
 namespace AutoSzervizWebapp.Pages.JavitasPages;
 
@@ -20,10 +19,7 @@ public class EditModel : PageModel
     [BindProperty]
     public JavitasEditDTO Javitas { get; set; } = new();
 
-    [BindProperty]
-    [Range(0,2)]
-    public int AllapotIndex { get; set; }
-
+    public int JavitasId { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
@@ -35,19 +31,20 @@ public class EditModel : PageModel
         var javitas = await _context.Javitasok
             .FirstOrDefaultAsync(j => j.Id == id);
 
+        if (javitas == null)
+        {
+            return NotFound();
+        }
+
+        JavitasId = javitas.Id;
+
         Javitas = new JavitasEditDTO
         {
             Rendszam = javitas.Rendszam,
             Leiras = javitas.Leiras,
             Koltseg = javitas.Koltseg,
-        };
-
-        AllapotIndex = javitas.Allapot switch
-        {
-            "Felvéve" => 0,
-            "Folyamatban" => 1,
-            "Kész" => 2,
-            _ => 0
+            Allapot = javitas.Allapot,
+            FelvetelDatuma = javitas.FelvetelDatuma
         };
 
         return Page();
@@ -55,11 +52,6 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(int id)
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
         var javitas = await _context.Javitasok
             .FirstOrDefaultAsync(j => j.Id == id);
 
@@ -68,26 +60,66 @@ public class EditModel : PageModel
             return NotFound();
         }
 
-        var ujAllapot = AllapotIndex switch
-        {
-            0 => "Felvéve",
-            1 => "Folyamatban",
-            2 => "Kész",
-            _ => null
-        };
+        JavitasId = javitas.Id;
 
-        if (ujAllapot == null) 
+        if (!ModelState.IsValid)
         {
-            return BadRequest();
+            Javitas.Allapot = javitas.Allapot;
+            return Page();
         }
 
         javitas.Rendszam = Javitas.Rendszam;
         javitas.Leiras = Javitas.Leiras;
         javitas.Koltseg = Javitas.Koltseg;
-        javitas.Allapot = ujAllapot;
+        javitas.FelvetelDatuma = Javitas.FelvetelDatuma;
 
         await _context.SaveChangesAsync();
 
         return RedirectToPage("./Index");
+    }
+
+    public async Task<IActionResult> OnPostAllapotValtasAsync(int id)
+    {
+        var javitas = await _context.Javitasok
+            .FirstOrDefaultAsync(j => j.Id == id);
+
+        if (javitas == null)
+        {
+            return NotFound();
+        }
+
+        JavitasId = javitas.Id;
+
+        if (javitas.Allapot == "Felvéve")
+        {
+            javitas.Allapot = "Folyamatban";
+        }
+        else if (javitas.Allapot == "Folyamatban")
+        {
+            if (javitas.Koltseg == null || javitas.Koltseg <= 0)
+            {
+                TempData["Hiba"] =
+                    "A javítás csak akkor állítható Kész állapotba, ha a költség nagyobb mint 0!";
+            }
+            else
+            {
+                javitas.Allapot = "Kész";
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        ModelState.Clear();
+
+        Javitas = new JavitasEditDTO
+        {
+            Rendszam = javitas.Rendszam,
+            Leiras = javitas.Leiras,
+            Koltseg = javitas.Koltseg,
+            Allapot = javitas.Allapot,
+            FelvetelDatuma = javitas.FelvetelDatuma
+        };
+
+        return Page();
     }
 }

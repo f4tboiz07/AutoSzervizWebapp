@@ -2,81 +2,87 @@
 @model AutoSzervizWebapp.Pages.JavitasPages.EditModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Javítás szerkesztése";
 }
 
-<h1>Edit</h1>
+<h1>Javítás szerkesztése</h1>
 
-<h4>Javitas</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+
+        <form method="post" asp-route-id="@Model.JavitasId">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
-                <span class="text-danger">*</span>
                 <label asp-for="Javitas.Rendszam" class="control-label"></label>
-                <input asp-for="Javitas.Rendszam" class="form-control" aria-required="true"/>
+                <input asp-for="Javitas.Rendszam" class="form-control" />
                 <span asp-validation-for="Javitas.Rendszam" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Javitas.Leiras" class="control-label"></label>
                 <input asp-for="Javitas.Leiras" class="form-control" />
                 <span asp-validation-for="Javitas.Leiras" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Javitas.Koltseg" class="control-label"></label>
                 <input asp-for="Javitas.Koltseg" class="form-control" />
                 <span asp-validation-for="Javitas.Koltseg" class="text-danger"></span>
             </div>
-            <div class="form-group mt-3">
-                <label asp-for="AllapotIndex" class="control-label"> Javítás állapota</label>
-                <input asp-for="AllapotIndex"
-                    type="range"
-                    min="0"
-                    max="2"
-                    step="1"
-                    class="form-range"
-                       oninput="document.getElementById('allapotSzoveg').textContent =
-                       ['Felvéve', 'Folyamatban', 'Kész'][this.value]"      
-                />
-@*                 <span asp-validation-for="Javitas.Allapot" class="text-danger"></span>*@
-                <div class="d-flex justify-content-between" >
-                    <small>Felvéve</small>
-                    <small>Folyamatban</small>
-                    <small>Kész</small>
-                </div>
-                <p class="mt-2">
-                    Kiválasztott Állapot:
-                    <strong id="allapotSzoveg">
-                        @(Model.AllapotIndex switch
-                        {
-                            0 => "Felvéve",
-                            1 => "Folyamatban",
-                            2 => "Kész",
-                            _ => "Folyamatban"
-                        })
-                    </strong>
-                </p>
-                
-                <span asp-validation-for="AllapotIndex" class="text-danger"></span>
-         </div>
+
             <div class="form-group">
                 <label asp-for="Javitas.FelvetelDatuma" class="control-label"></label>
                 <input asp-for="Javitas.FelvetelDatuma" class="form-control" />
                 <span asp-validation-for="Javitas.FelvetelDatuma" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-primary">
+                    Mentés
+                </button>
             </div>
+
         </form>
+
+        <hr />
+
+        <div class="mt-3">
+            <h5>Javítás állapota</h5>
+
+            <p>
+                Jelenlegi állapot:
+                <strong>@Model.Javitas.Allapot</strong>
+            </p>
+
+            <form method="post" asp-page-handler="AllapotValtas">
+                <input type="hidden" name="id" value="@Model.JavitasId" />
+
+                <button type="submit"
+                        class="btn btn-success"
+                        disabled="@(Model.Javitas.Allapot == "Kész")">
+                    Állapot továbbléptetése
+                </button>
+            </form>
+
+            @if (TempData["Hiba"] != null)
+            {
+                <p class="text-danger mt-2">@TempData["Hiba"]</p>
+            }
+        </div>
+
     </div>
 </div>
 
-<div>
-    <a asp-page="./Index">Back to List</a>
+<div class="mt-3">
+    <a asp-page="./Index">Vissza a listához</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

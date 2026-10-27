@@ -17,10 +17,19 @@ public class IndexModel : PageModel
 
     public IList<Javitas> Javitas { get; set; } = default!;
 
-    public async Task OnGetAsync()
+
+    public async Task OnGetAsync(string? allapot)
     {
-        Javitas = await _context.Javitasok
+        var query = _context.Javitasok
             .Include(j => j.Ugyfel)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(allapot))
+        {
+            query = query.Where(j => j.Allapot == allapot);
+        }
+
+        Javitas = await query 
             .OrderBy(j => j.Ugyfel.Nev)
             .ToListAsync();
     }

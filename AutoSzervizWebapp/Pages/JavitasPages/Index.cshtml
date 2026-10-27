@@ -10,6 +10,14 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<div class="mb-3">
+    <a asp-page="./Index" class="btn-secondary">Összes</a>
+    <a asp-page="./Index" class="btn-secondary" asp-route-allapot="Felvéve">Felvéve</a>
+    <a asp-page="./Index" class="btn-secondary" asp-route-allapot="Folyamatban">Folyamatban</a>
+    <a asp-page="./Index" class="btn-secondary" asp-route-allapot="Kész">Kész</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>

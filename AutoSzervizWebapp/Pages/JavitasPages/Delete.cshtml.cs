@@ -18,6 +18,8 @@ public class DeleteModel : PageModel
     [BindProperty]
     public Javitas Javitas { get; set; } = default!;
 
+    public string ugyfelNev { get; set; } = string.Empty;
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         if (id is null)
@@ -25,14 +27,18 @@ public class DeleteModel : PageModel
             return NotFound();
         }
 
-        var javitas = await _context.Javitasok.FirstOrDefaultAsync(m => m.Id == id);
+        var javitas = await _context.Javitasok
+            .Where(m => m.Id == id)
+            .Select(j => new { Javitas = j, ugyfelNev = j.Ugyfel.Nev })
+            .FirstOrDefaultAsync();
         if (javitas is null)
         {
             return NotFound();
         }
         else
         {
-            Javitas = javitas;
+            Javitas = javitas.Javitas;
+            ugyfelNev = javitas.ugyfelNev;
         }
 
         return Page();
@@ -40,6 +46,7 @@ public class DeleteModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(int? id)
     {
+
         if (id is null)
         {
             return NotFound();
@@ -49,6 +56,7 @@ public class DeleteModel : PageModel
         if (javitas != null)
         {
             Javitas = javitas;
+
             _context.Javitasok.Remove(Javitas);
             await _context.SaveChangesAsync();
         }
